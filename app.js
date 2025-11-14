@@ -1,3 +1,7 @@
+// URL do seu Apps Script (cola a sua aqui)
+const API_URL = "https://script.google.com/macros/s/AKfycbypI3-VNiU7enWi17nB5HASaEZZyYY7BAcYVB98erPWf1EMu9VbWPz5qcL3BPwDEHMf3g/exec";
+
+
 // ====== NAVEGAÇÃO ENTRE TELAS ======
 const screens = document.querySelectorAll(".screen");
 const bottomNavItems = document.querySelectorAll(".bottom-nav-item");
@@ -314,22 +318,55 @@ function updateMonthDisplay() {
 }
 
 function nextMonth() {
-    currentMonthIndex++;
-    if (currentMonthIndex > 11) {
-        currentMonthIndex = 0;
-        currentYear++;
-    }
-    updateMonthDisplay();
+  currentMonthIndex++;
+  if (currentMonthIndex > 11) {
+    currentMonthIndex = 0;
+    currentYear++;
+  }
+  updateMonthDisplay();
+  carregarLancamentosMes(currentMonthIndex + 1, currentYear);
 }
 
 function prevMonth() {
-    currentMonthIndex--;
-    if (currentMonthIndex < 0) {
-        currentMonthIndex = 11;
-        currentYear--;
-    }
-    updateMonthDisplay();
+  currentMonthIndex--;
+  if (currentMonthIndex < 0) {
+    currentMonthIndex = 11;
+    currentYear--;
+  }
+  updateMonthDisplay();
+  carregarLancamentosMes(currentMonthIndex + 1, currentYear);
+
 }
+
+// ===============================
+//  API - Buscar lançamentos do mês
+// ===============================
+async function carregarLancamentosMes(mes, ano) {
+    try {
+        const url = `${API_URL}?action=list&mes=${mes}&ano=${ano}`;
+        const resp = await fetch(url);
+        const json = await resp.json();
+
+        if (!json.ok) {
+            console.error("Erro na API:", json.error);
+            return;
+        }
+
+        console.log("Lançamentos do mês:", json.data);
+
+        // 👉 Aqui você vai:
+        // - somar receitas
+        // - somar despesas
+        // - calcular saldo
+        // - atualizar cards
+        // - atualizar gráficos
+        // (vou te mandar essa parte já pronta depois)
+
+    } catch (err) {
+        console.error("Erro ao carregar lançamentos:", err);
+    }
+}
+
 
 // chamar ao iniciar
 updateMonthDisplay();
@@ -337,3 +374,6 @@ updateMonthDisplay();
 // Inicial
 setScreen("dashboard");
 setTheme("light");
+
+carregarLancamentosMes(currentMonthIndex + 1, currentYear);
+
