@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Minhas Finanças - App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- Fonte e ícones estilo Material -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+
+  <!-- Chart.js para os gráficos -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+
+    <!-- CABEÇALHO (muda de cor conforme a tela) -->
+    <header id="appHeader" class="app-header app-header--blue">
+      <div class="status-bar">
+        <span class="status-time">08:28</span>
+        <div class="status-icons">
+          <span class="material-icons-round">signal_cellular_alt</span>
+          <span class="material-icons-round">wifi</span>
+          <span class="material-icons-round">battery_full</span>
+        </div>
+      </div>
+
+      <div class="app-bar">
+        <button class="icon-btn" id="menuButton">
+          <span class="material-icons-round">menu</span>
+        </button>
+
+        <div class="app-bar-title">
+          <h1 id="screenTitle">Dashboard</h1>
+          <span class="app-bar-sub" id="screenSubtitle">Abril</span>
+        </div>
+
+        <div class="app-bar-actions">
+          <button class="icon-btn" id="darkModeToggle" title="Modo claro/escuro">
+            <span class="material-icons-round" id="darkModeIcon">dark_mode</span>
+          </button>
+          <button class="icon-btn">
+            <span class="material-icons-round">more_vert</span>
+          </button>
+        </div>
+      </div>
+
+        <div class="month-nav">
+        <button class="icon-btn" id="monthPrev">
+          <span class="material-icons-round">chevron_left</span>
+        </button>
+        <span id="monthLabel">Abril</span>
+        <button class="icon-btn" id="monthNext">
+          <span class="material-icons-round">chevron_right</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- CONTEÚDO -->
+    <main class="app-main">
+
+      <!-- DASHBOARD -->
+      <section class="screen screen--active" data-screen="dashboard">
+                <div class="card card-horizontal">
+          <div class="progress-steps">
+            <div class="step step--done"></div>
+            <div class="step step--current"></div>
+            <div class="step"></div>
+          </div>
+          <div class="card-horizontal-row">
+            <div class="amount-block">
+              <span class="label">R$ 8.500,00</span>
+              <span class="hint">Receitas do mês</span>
+            </div>
+            <div class="amount-block amount-block--current">
+              <span class="label">R$ 445,40</span>
+              <span class="hint">Sobrando no mês</span>
+            </div>
+            <div class="amount-block">
+              <span class="label">R$ 8.054,60</span>
+              <span class="hint">Despesas do mês</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card card-tabs">
+          <div class="tabs">
+            <button class="tab tab--active" data-dashboard-tab="despesas">Despesas</button>
+            <button class="tab" data-dashboard-tab="receitas">Receitas</button>
+            <button class="tab" data-dashboard-tab="transferencias">Transferências</button>
+            <div class="tab-indicator"></div>
+          </div>
+
+          <div class="tab-panel" data-dashboard-panel="despesas">
+            <div class="brand-row">
+              <div class="brand-circle brand-circle--orange">IN</div>
+              <div class="brand-circle brand-circle--green">ME</div>
+              <div class="brand-circle brand-circle--purple">NU</div>
+            </div>
+            <p class="text-center">
+              Você tem <strong>27 despesas pendentes</strong> no total de
+              <strong>R$ 3.746,95</strong>
+            </p>
+            <div class="center-row">
+              <button class="outlined-btn">Verificar</button>
+            </div>
+          </div>
+
+          <div class="tab-panel" data-dashboard-panel="receitas">
+            <p class="text-center">
+              Suas receitas cadastradas para <strong>abril</strong> somam
+              <strong>R$ 8.500,00</strong>.
+            </p>
+          </div>
+
+          <div class="tab-panel" data-dashboard-panel="transferencias">
+            <p class="text-center">
+              Você realizou <strong>5 transferências</strong> entre contas neste mês.
+            </p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header-row">
+            <span class="card-title">Despesas por categoria</span>
+            <div class="card-header-actions">
+              <button class="icon-btn icon-btn--small">
+                <span class="material-icons-round">open_in_new</span>
+              </button>
+              <button class="icon-btn icon-btn--small">
+                <span class="material-icons-round">expand_more</span>
+              </button>
+            </div>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="chartDespesasCategorias"></canvas>
+          </div>
+          <ul class="legend-list" id="legendCategorias"></ul>
+        </div>
+      </section>
+
+      <!-- CONTAS -->
+      <section class="screen" data-screen="contas">
+        <div class="section-header">
+          <span class="section-title">Contas</span>
+          <span class="section-subtitle">Saldo total R$ 2.533,73</span>
+        </div>
+
+        <ul class="list">
+          <li class="list-item">
+            <div class="list-avatar list-avatar--green">AL</div>
+            <div class="list-body">
+              <span class="list-title">Alelo</span>
+              <span class="list-sub">Saldo previsto</span>
+            </div>
+            <div class="list-values">
+              <span class="list-value">R$ 118,51</span>
+              <span class="list-sub-value">R$ 0,00</span>
+            </div>
+          </li>
+
+          <li class="list-item">
+            <div class="list-avatar list-avatar--orange">IN</div>
+            <div class="list-body">
+              <span class="list-title">Banco Inter</span>
+              <span class="list-sub">Conta corrente</span>
+            </div>
+            <div class="list-values">
+              <span class="list-value">R$ 2.289,21</span>
+              <span class="list-sub-value">R$ 2.116,80</span>
+            </div>
+          </li>
+
+          <li class="list-item">
+            <div class="list-avatar list-avatar--pink">BR</div>
+            <div class="list-body">
+              <span class="list-title">Bradesco</span>
+              <span class="list-sub">Conta corrente</span>
+            </div>
+            <div class="list-values">
+              <span class="list-value">R$ 5,04</span>
+              <span class="list-sub-value">R$ 5,04</span>
+            </div>
+          </li>
+
+          <li class="list-item">
+            <div class="list-avatar list-avatar--gray">
+              <span class="material-icons-round">account_balance_wallet</span>
+            </div>
+            <div class="list-body">
+              <span class="list-title">Carteira</span>
+              <span class="list-sub">Saldo previsto</span>
+            </div>
+            <div class="list-values">
+              <span class="list-value">R$ 110,00</span>
+              <span class="list-sub-value">R$ 110,00</span>
+            </div>
+          </li>
+
+          <li class="list-item">
+            <div class="list-avatar list-avatar--purple">NU</div>
+            <div class="list-body">
+              <span class="list-title">Nubank</span>
+              <span class="list-sub">Outros</span>
+            </div>
+            <div class="list-values">
+              <span class="list-value list-value--negative">-R$ 133,87</span>
+              <span class="list-sub-value list-value--negative">-R$ 133,87</span>
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      <!-- CARTÕES -->
+      <section class="screen" data-screen="cartoes">
+        <div class="section-header">
+          <span class="section-title">Cartões de crédito</span>
+          <span class="section-subtitle">Abril</span>
+        </div>
+
+        <div class="card card-bank">
+          <div class="card-bank-header">
+            <div class="list-avatar list-avatar--red">SA</div>
+            <div>
+              <span class="card-bank-title">Santander</span>
+              <div class="card-bank-tags">
+                <span class="tag tag--green">Ativo</span>
+              </div>
+            </div>
+            <div class="card-bank-actions">
+              <button class="icon-btn icon-btn--small">
+                <span class="material-icons-round">add</span>
+              </button>
+              <button class="icon-btn icon-btn--small">
+                <span class="material-icons-round">receipt_long</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="card-bank-row">
+            <span>Limite</span>
+            <span>R$ 27.040,00</span>
+          </div>
+          <div class="card-bank-row">
+            <span>Em aberto</span>
+            <span>R$ 7.691,39</span>
+          </div>
+          <div class="card-bank-row">
+            <span>Limite disp.</span>
+            <span>R$ 19.348,61</span>
+          </div>
+
+          <div class="progress-bar">
+            <div class="progress-bar-inner" style="width: 30%"></div>
+          </div>
+
+          <div class="card-bank-row card-bank-row--small">
+            <span>Fechamento</span>
+            <span>09/04</span>
+          </div>
+          <div class="card-bank-row card-bank-row--small">
+            <span>Vencimento</span>
+            <span>16/04</span>
+          </div>
+
+          <div class="card-bank-footer">
+            <span>Fatura parcial</span>
+            <span class="card-bank-amount">R$ 1.997,63</span>
+          </div>
+
+          <button class="outlined-btn w-100">Registrar pagamento</button>
+        </div>
+
+        <div class="card card-bank">
+          <div class="card-bank-header">
+            <div class="list-avatar list-avatar--orange">IN</div>
+            <div>
+              <span class="card-bank-title">Inter</span>
+              <div class="card-bank-tags">
+                <span class="tag tag--blue">Fatura paga</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-bank-row">
+            <span>Limite</span>
+            <span>R$ 10.000,00</span>
+          </div>
+          <div class="card-bank-row">
+            <span>Em aberto</span>
+            <span>R$ 2.466,90</span>
+          </div>
+          <div class="card-bank-row">
+            <span>Limite disp.</span>
+            <span>R$ 7.533,10</span>
+          </div>
+
+          <div class="progress-bar">
+            <div class="progress-bar-inner progress-bar-inner--blue" style="width: 20%"></div>
+          </div>
+
+          <div class="card-bank-row card-bank-row--small">
+            <span>Fechamento</span>
+            <span>04/04</span>
+          </div>
+          <div class="card-bank-row card-bank-row--small">
+            <span>Vencimento</span>
+            <span>10/04</span>
+          </div>
+
+          <div class="card-bank-footer">
+            <span>Fatura paga</span>
+            <span class="card-bank-amount card-bank-amount--positive">R$ 1.392,12</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ORÇAMENTOS -->
+      <section class="screen" data-screen="orcamentos">
+        <div class="section-header">
+          <span class="section-title">Orçamentos</span>
+          <span class="section-subtitle">Planejamento mensal</span>
+        </div>
+
+        <div class="card budget-card">
+          <div class="budget-header">
+            <div class="list-avatar list-avatar--red">
+              <span class="material-icons-round">pie_chart</span>
+            </div>
+            <div>
+              <span class="budget-title">Orçamento geral</span>
+              <span class="budget-sub">R$ 4.307,65 de R$ 0,00</span>
+            </div>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-bar-inner progress-bar-inner--red" style="width: 80%"></div>
+          </div>
+          <div class="budget-footer">
+            <span class="budget-amount-negative">-R$ 4.307,65</span>
+            <span class="budget-percent">4308%</span>
+          </div>
+        </div>
+
+        <div class="card budget-card">
+          <div class="budget-header">
+            <div class="list-avatar list-avatar--yellow">
+              <span class="material-icons-round">restaurant</span>
+            </div>
+            <div>
+              <span class="budget-title">Alimentação</span>
+              <span class="budget-sub">R$ 842,63 de R$ 600,00</span>
+            </div>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-bar-inner progress-bar-inner--yellow" style="width: 70%"></div>
+          </div>
+          <div class="budget-footer">
+            <span class="budget-amount-negative">-R$ 242,63</span>
+            <span class="budget-percent">140%</span>
+          </div>
+        </div>
+
+        <div class="card budget-card">
+          <div class="budget-header">
+            <div class="list-avatar list-avatar--blue">
+              <span class="material-icons-round">directions_car</span>
+            </div>
+            <div>
+              <span class="budget-title">Carro</span>
+              <span class="budget-sub">R$ 0,00 de R$ 1.000,00</span>
+            </div>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-bar-inner progress-bar-inner--blue" style="width: 0%"></div>
+          </div>
+          <div class="budget-footer">
+            <span class="budget-amount">R$ 1.000,00</span>
+            <span class="budget-percent">0%</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- GRÁFICOS -->
+      <section class="screen" data-screen="graficos">
+        <div class="section-header">
+          <span class="section-title">Gráficos</span>
+          <span class="section-subtitle">Evolução por categoria</span>
+        </div>
+
+        <div class="card">
+          <div class="card-header-row">
+            <span class="card-title">Ranking categorias</span>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="chartRankingCategorias"></canvas>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header-row">
+            <span class="card-title">Despesas por categoria</span>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="chartDespesasCategorias2"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- INVESTIMENTOS -->
+      <section class="screen" data-screen="investimentos">
+        <div class="section-header">
+          <span class="section-title">Investimentos</span>
+          <span class="section-subtitle">Resumo da carteira</span>
+        </div>
+
+        <!-- Card topo com total investido -->
+        <div class="card">
+          <div class="card-header-row">
+            <span class="card-title">Total investido</span>
+          </div>
+          <div style="text-align: center; margin: 6px 0 10px;">
+            <div style="font-size: 22px; font-weight: 500;">R$ 35.420,00</div>
+            <div style="font-size: 12px; color: var(--text-sub);">
+              Somando renda fixa, variável e outros
+            </div>
+          </div>
+          <div class="card-bank-row">
+            <span>Renda fixa</span>
+            <span>R$ 18.000,00</span>
+          </div>
+          <div class="card-bank-row">
+            <span>Renda variável</span>
+            <span>R$ 12.500,00</span>
+          </div>
+          <div class="card-bank-row">
+            <span>Caixa / outros</span>
+            <span>R$ 4.920,00</span>
+          </div>
+        </div>
+
+        <!-- Gráfico pizza dos investimentos -->
+        <div class="card">
+          <div class="card-header-row">
+            <span class="card-title">Distribuição da carteira</span>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="chartInvestimentos"></canvas>
+          </div>
+          <ul class="legend-list" id="legendInvestimentos"></ul>
+        </div>
+      </section>
+
+
+      <!-- OBJETIVOS -->
+      <section class="screen" data-screen="objetivos">
+        <div class="section-header">
+          <span class="section-title">Objetivos</span>
+          <span class="section-subtitle">Organize seus sonhos</span>
+        </div>
+
+        <div class="card goal-card">
+          <div class="goal-header">
+            <div class="list-avatar list-avatar--purple">
+              <span class="material-icons-round">directions_car</span>
+            </div>
+            <div>
+              <span class="goal-title">Carro novo</span>
+              <span class="goal-sub">Já tá na hora de trocar o carango!</span>
+            </div>
+          </div>
+
+          <div class="goal-main">
+            <div class="goal-circle">
+              <div class="goal-circle-inner">
+                <span class="goal-percent">2%</span>
+              </div>
+            </div>
+            <div class="goal-info">
+              <div class="goal-row">
+                <span>Objetivo</span>
+                <span>R$ 25.000,00</span>
+              </div>
+              <div class="goal-row">
+                <span>Saldo atual</span>
+                <span>R$ 600,00</span>
+              </div>
+              <div class="goal-row">
+                <span>Falta</span>
+                <span>R$ 24.400,00</span>
+              </div>
+              <div class="goal-row">
+                <span>Ideal por mês</span>
+                <span>R$ 2.033,33</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="goal-footer">
+            <button class="primary-btn w-100">Calcular depósito ideal</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- BOTÃO FLUTUANTE -->
+    <button class="fab" id="fabButton">
+      <span class="material-icons-round">add</span>
+    </button>
+
+    <!-- NAV BOTTOM -->
+        <nav class="bottom-nav">
+      <button class="bottom-nav-item bottom-nav-item--active" data-target="dashboard">
+        <span class="material-icons-round">home</span>
+        <span>Início</span>
+      </button>
+      <button class="bottom-nav-item" data-target="contas">
+        <span class="material-icons-round">account_balance</span>
+        <span>Contas</span>
+      </button>
+      <button class="bottom-nav-item" data-target="cartoes">
+        <span class="material-icons-round">credit_card</span>
+        <span>Cartões</span>
+      </button>
+      <button class="bottom-nav-item" data-target="orcamentos">
+        <span class="material-icons-round">view_list</span>
+        <span>Orçamentos</span>
+      </button>
+      <button class="bottom-nav-item" data-target="graficos">
+        <span class="material-icons-round">bar_chart</span>
+        <span>Gráficos</span>
+      </button>
+      <!-- NOVO: INVESTIMENTOS -->
+      <button class="bottom-nav-item" data-target="investimentos">
+        <span class="material-icons-round">savings</span>
+        <span>Invest.</span>
+      </button>
+      <!-- ------------- -->
+      <button class="bottom-nav-item" data-target="objetivos">
+        <span class="material-icons-round">flag</span>
+        <span>Objetivos</span>
+      </button>
+    </nav>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
